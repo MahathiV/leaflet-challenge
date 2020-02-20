@@ -10,7 +10,6 @@ d3.json(url,function(url_data){
     //console.log(url_data["features"][0]["properties"]["time"])
 
     /* once we get response, create a geoJSON layer containing the "features" array
-       and add a popup for each marker ,
        then, send the layer to "createmap" function
     */
     
@@ -51,22 +50,22 @@ var loc_coords = []
 url_data_features.forEach(function(d)
  {
     //console.log(d.geometry.coordinates[0])
-    loc_coords.push(d.geometry.coordinates[1],d.geometry.coordinates[0])
+    loc_coords.push(d.geometry.coordinates[1],d.geometry.coordinates[0])  //  pushing Latitude and Longtitude of locations to an array
       
     //console.log(d.properties.mag)
 
     var circles =
-      L.circle(loc_coords,{
+      L.circle(loc_coords,{                  //adding circles as location markers with respective location coordinates
         fillOpacity:0.8,        
         color:"brown",
         weight:0.45,
         fillColor:fill_color(d.properties.mag),
         radius:d.properties.mag * 20000 // adjusting radius so that its visible
       }).bindPopup(`<h3> ${d.properties.place} </h3> <hr> <p> <b>${Date(d.properties.time)} <br> EarthQuake Magnitude:${d.properties.mag}<b></p>`)
-        .addTo(map_obj)
+        .addTo(map_obj)   // adding popups on circles to view extra information
 
      // cir_pops.push(circles.bindPopup(`<h3> ${d.properties.place} </h3> <hr> <p> <b>${Date(d.properties.time)} <br> EarthQuake Magnitude:${d.properties.mag}<b></p>`))
-     loc_coords = []
+     loc_coords = []  // clearing the array for next location coordinates
     
    })
 

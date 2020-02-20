@@ -10,7 +10,6 @@ d3.json(url,function(url_data){
     //console.log(url_data["features"][0]["properties"]["time"])
 
     /* once we get response, create a geoJSON layer containing the "features" array
-       and add a popup for each marker ,
        then, send the layer to "createmap" function
     */
     
@@ -33,28 +32,28 @@ function create_map(url_data_features)
    url_data_features.forEach(function(d)
    {
      //console.log(d.geometry.coordinates[0])
-      loc_coords.push(d.geometry.coordinates[1],d.geometry.coordinates[0])
+      loc_coords.push(d.geometry.coordinates[1],d.geometry.coordinates[0])   //  pushing Latitude and Longtitude of locations to an array
       
       //console.log(d.properties.mag)
 
       var circles =
-        L.circle(loc_coords,{
+        L.circle(loc_coords,{     //adding circles as location markers with respective location coordinates
         fillOpacity:0.8,        
           color:"brown",
           weight:0.45,
           fillColor:fill_color(d.properties.mag),
           radius:d.properties.mag * 20000 // adjusting radius so that its visible
       })
-
+    // adding popups on circles to view extra information
      cir_pops.push(circles.bindPopup(`<h3> ${d.properties.place} </h3> <hr> <p> <b>${Date(d.properties.time)} <br> EarthQuake Magnitude:${d.properties.mag}<b></p>`))
 
-     loc_coords = []
+     loc_coords = []      // clearing the array for next location coordinates
     
    })
 
    //console.log(circles)
 
-       // street map
+       // adding base map layers - street view , outdoor view and satellite view
 
        var street_map = L.tileLayer("https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}",
        {
@@ -88,7 +87,7 @@ function create_map(url_data_features)
          "Outdoors": outdoor_map
        }
 
-       //create layer groups
+       //create layer groups  - to view the given locations(of earthquakes) on selected base map view
 
        var circle_layer = L.layerGroup(cir_pops)
        var techtonic_layer = L.layerGroup()
@@ -101,9 +100,10 @@ function create_map(url_data_features)
    
        //create map = base layer + overlay layer
        var map_obj = L.map("map",{
-          center: [39.09, -114.71],
-         //center: [37.09, -95.71],
-         zoom:5,
+         // center: [39.09, -90.71],
+        // center: [14.09, -68.71],
+         center: [28.09, -68.71],
+         zoom:4,
          layers:[satellite_map,circle_layer,techtonic_layer]
        }) 
    
@@ -144,14 +144,18 @@ function create_map(url_data_features)
       
     d3.json(techtonic_plates,function(data)
       {
-        console.log(data)
+        //console.log(data)
         geojson = L.geoJSON(data,{
         color:"rgb(240, 107, 45)",
         weight:2
         })
-        console.log(geojson)
+        //console.log(geojson)
         geojson.addTo(techtonic_layer)
+        //console.log(cir_pops)
+        
+        //geojson.addTo(cir_pops)
 
+        //cir_pops.addTo(geojson)
       })
 
 
@@ -182,7 +186,7 @@ function fill_color(mag)
 }
 
 
-// colors for legends
+// colors for legends 
 
 function get_color(d)
 {
